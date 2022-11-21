@@ -1132,12 +1132,13 @@ function newClient() {
 
 	# determine basestation or desktop
 	
-	if [ "${PASS}" == '1' ]	
+	if [ "${PASS}" == '1' ];then
 		# basestation	
 		echo "iroute $defaultNetworkToRoute $defaultNetworkRouteMask" >> "/etc/openvpn/ccd/$CLIENT"
 	else
 		#desktop
-		echo "push \"route $defaultNetworkToRoute $defaultNetworkRouteMask\"" >> "/etc/openvpn/ccd/$CLIENT"
+		echo "push route $defaultNetworkToRoute $defaultNetworkRouteMask" >> "/etc/openvpn/ccd/$CLIENT"
+	fi
 	{
 		echo "<ca>"
 		cat "/etc/openvpn/easy-rsa/pki/ca.crt"
