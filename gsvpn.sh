@@ -1121,23 +1121,22 @@ function newClient() {
 
 	# Configure network to route
 	echo ""
-		echo "Select Production Network to connect. 172.16.X.0"
-		echo "Default = 1 (172.16.1.0)"
-		
+	echo "Select Production Network to connect. 172.16.X.0"
+	echo "Default = 1 (172.16.1.0)"
+	
 		until [[ $OCTET3 =~ ^[1-2]$ ]]; do
 			read -rp "Type the third octet of the production LAN [1-254]: " -e -i 1 OCTET3
 		done
-		defaultNetworkToRoute = "172.16.$OCTET3.0"
-		defaultNetworkRouteMask = "255.255.255.0"
+\
 
 	# determine basestation or desktop
 	
 	if [ "${PASS}" == '1' ];then
 		# basestation	
-		echo "iroute $defaultNetworkToRoute $defaultNetworkRouteMask" >> "/etc/openvpn/ccd/$CLIENT"
+		echo "iroute 172.16.$OCTET3.0 255.255.255.0" >> "/etc/openvpn/ccd/$CLIENT"
 	else
 		#desktop
-		echo "push route $defaultNetworkToRoute $defaultNetworkRouteMask" >> "/etc/openvpn/ccd/$CLIENT"
+		echo "push route \"172.16.$OCTET3.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT"
 	fi
 	{
 		echo "<ca>"
