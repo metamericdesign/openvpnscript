@@ -1137,7 +1137,7 @@ function newClient() {
 		echo "push route \"172.16.$OCTET3.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT"
 	fi
 	#start with template
-	cp /etc/openvpn/client_template.txt "$homeDir/$CLIENT.ovpn"
+	cp /etc/openvpn/client-template.txt "$homeDir/$CLIENT.ovpn"
 	{
 		echo "<ca>"
 		cat "/etc/openvpn/easy-rsa/pki/ca.crt"
