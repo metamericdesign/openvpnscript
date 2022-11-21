@@ -1135,7 +1135,6 @@ function newClient() {
 	if [ "${PASS}" == '1' ]	
 		# basestation	
 		echo "iroute $defaultNetworkToRoute $defaultNetworkRouteMask" >> "/etc/openvpn/ccd/$CLIENT"
-		
 	else
 		#desktop
 		echo "push \"route $defaultNetworkToRoute $defaultNetworkRouteMask\"" >> "/etc/openvpn/ccd/$CLIENT"
