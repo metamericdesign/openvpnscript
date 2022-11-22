@@ -1056,7 +1056,7 @@ function newClient() {
 	echo ""
 	echo "Will this be a Basestation or Desktop client?"
 	echo "   1) Basestation"
-	echo "   2) Desktop"
+	echo "   2) Desktop (default)"
 
 	until [[ $PASS =~ ^[1-2]$ ]]; do
 		read -rp "Select an option [1-2]: " -e -i 2 PASS
@@ -1069,8 +1069,6 @@ function newClient() {
 	until [[ $CLIENT =~ ^[a-zA-Z0-9_-]+$ ]]; do
 		read -rp "Client name: " -e CLIENT
 	done
-
-
 
 	CLIENTEXISTS=$(tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep -c -E "/CN=$CLIENT\$")
 	if [[ $CLIENTEXISTS == '1' ]]; then
@@ -1324,16 +1322,18 @@ function removeOpenVPN() {
 }
 
 function manageMenu() {
-	echo "Welcome to OpenVPN-install!"
-	echo "The git repository is available at: https://github.com/angristan/openvpn-install"
-	echo ""
-	echo "It looks like OpenVPN is already installed."
+	echo "			GREEEN SCIENCE VPN MANAGER"
+
+	echo "Welcome to GreenScience OpenVPN Manager!"
+	echo "The git repository is available at: https://github.com/metamericdesign/openvpnscript"
 	echo ""
 	echo "What do you want to do?"
+	echo ""
 	echo "   1) Add a new user"
 	echo "   2) Revoke existing user"
 	echo "   3) Remove OpenVPN"
 	echo "   4) Exit"
+	echo ""
 	until [[ $MENU_OPTION =~ ^[1-4]$ ]]; do
 		read -rp "Select an option [1-4]: " MENU_OPTION
 	done
