@@ -1322,8 +1322,14 @@ function removeOpenVPN() {
 }
 
 function manageMenu() {
-	echo "			GREEEN SCIENCE VPN MANAGER"
-
+	echo ""
+	echo "              ____   _____________________   ";
+	echo "   ____  _____\   \ /   /\______   \      \  ";
+	echo "  / ___\/  ___/\   Y   /  |     ___/   |   \ ";
+	echo " / /_/  >___ \  \     /   |    |  /    |    \\";
+	echo " \___  /____  >  \___/    |____|  \____|__  /";
+	echo "/_____/     \/                            \/ ";
+	echo ""
 	echo "Welcome to GreenScience OpenVPN Manager!"
 	echo "The git repository is available at: https://github.com/metamericdesign/openvpnscript"
 	echo ""
