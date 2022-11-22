@@ -1059,7 +1059,7 @@ function newClient() {
 	echo "   2) Desktop"
 
 	until [[ $PASS =~ ^[1-2]$ ]]; do
-		read -rp "Select an option [1-2]: " -e -i 1 PASS
+		read -rp "Select an option [1-2]: " -e -i 2 PASS
 	done
 	
 	echo ""
@@ -1123,7 +1123,7 @@ function newClient() {
 	echo "Select Production Network to connect. 172.16.X.0"
 	echo "Default = 1 (172.16.1.0)"
 	
-		until [[ $OCTET3 =~ ^[1-2]$ ]]; do
+		until [[ $OCTET3 =~ ^[1-254]$ ]]; do
 			read -rp "Type the third octet of the production LAN [1-254]: " -e -i 1 OCTET3
 		done
 
@@ -1134,7 +1134,7 @@ function newClient() {
 		echo "iroute 172.16.$OCTET3.0 255.255.255.0" >> "/etc/openvpn/ccd/$CLIENT"
 	else
 		#desktop
-		echo "push route \"172.16.$OCTET3.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT"
+		echo "push \"route 172.16.$OCTET3.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT"
 	fi
 	#start with template
 	cp /etc/openvpn/client-template.txt "$homeDir/$CLIENT.ovpn"
@@ -1201,8 +1201,10 @@ function revokeClient() {
 	find /home/ -maxdepth 2 -name "$CLIENT.ovpn" -delete
 	rm -f "/root/$CLIENT.ovpn"
 	sed -i "/^$CLIENT,.*/d" /etc/openvpn/ipp.txt
-	cp /etc/openvpn/easy-rsa/pki/index.txt{,.bk} #somthing wrong with removing user from thisfile
-
+	cp /etc/openvpn/easy-rsa/pki/index.txt{,.bk} 
+	ln = awk "/$CLIENT/{print NR}" index.txt
+	sed -i "{$ln}d" filename
+	echo "Deleted cert on line: $ln"
 	echo ""
 	echo "Certificate for client $CLIENT revoked."
 }
