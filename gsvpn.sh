@@ -1201,6 +1201,7 @@ function revokeClient() {
 	chmod 644 /etc/openvpn/crl.pem
 	find /home/ -maxdepth 2 -name "$CLIENT.ovpn" -delete
 	rm -f "/root/$CLIENT.ovpn"
+	rm -f "/etc/openvpn/ccd/$CLIENT"
 	sed -i "/^$CLIENT,.*/d" /etc/openvpn/ipp.txt
 	cp /etc/openvpn/easy-rsa/pki/index.txt{,.bk} 
 	sed -i "/$CLIENT/d" /etc/openvpn/easy-rsa/pki/index.txt #delete cert
