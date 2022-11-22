@@ -1202,7 +1202,7 @@ function revokeClient() {
 	rm -f "/root/$CLIENT.ovpn"
 	sed -i "/^$CLIENT,.*/d" /etc/openvpn/ipp.txt
 	cp /etc/openvpn/easy-rsa/pki/index.txt{,.bk} 
-	ln = awk "/$CLIENT/{print NR}" index.txt
+	ln = awk "/$CLIENT/{print NR}" /etc/openvpn/easy-rsa/pki/index.txt
 	sed -i "{$ln}d" filename
 	echo "Deleted cert on line: $ln"
 	echo ""
