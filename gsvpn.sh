@@ -1133,9 +1133,11 @@ function newClient() {
 			read -rp "Type the third octet of the production LAN [1-254]: " -e -i 1 OCTET3
 		done
 		echo "iroute 172.16.$OCTET3.0 255.255.255.0" >> "/etc/openvpn/ccd/$CLIENT"
+		echo "push \"route 10.0.0.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT" # reach cloud lan
 	else
 		#desktop
-		echo "push \"route 172.16.0.0 255.255.0.0\"" >> "/etc/openvpn/ccd/$CLIENT"
+		echo "push \"route 172.16.0.0 255.255.0.0\"" >> "/etc/openvpn/ccd/$CLIENT" # reach production lan
+		echo "push \"route 10.0.0.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT" # reach cloud lan
 	fi
 	#start with template
 	cp /etc/openvpn/client-template.txt "$homeDir/$CLIENT.ovpn"
