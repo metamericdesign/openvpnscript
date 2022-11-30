@@ -1323,21 +1323,31 @@ function removeOpenVPN() {
 function displayVPNstatus(){
 	BGreen='\033[1;32m'
 	NC='\033[0m' # No Color
-	echo -e "${BGreen}Green${NC}Science"
+	On_Green='\033[1;42m'       # Green back
+	Black='\033[0;30m'        # Black
+	echo ""
+	echo -e "${On_Green}GreenScience${NC} VPN Status"
+	echo ""
+	cat /var/log/openvpn/status.log
 }
 function manageMenu() {
+	green_text='\033[32m'       	# Green text
+	On_Green='\033[1;42m'       	# Green back
+	NC='\033[0m' # No Color
+	underline_text='\033[1m'       	# bold text
+	darker_text='\033[2m'       	# darker text
+	echo -e "${green_text}                                               ${NC}"
+	echo -e "${green_text}               ____   _____________________    ${NC}";
+	echo -e "${green_text}    ____  _____\   \ /   /\______   \      \   ${NC}";
+	echo -e "${green_text}   / ___\/  ___/\   Y   /  |     ___/   |   \  ${NC}";
+	echo -e "${green_text}  / /_/  >___ \  \     /   |    |  /    |    \\ ${NC}";
+	echo -e "${green_text}  \___  /____  >  \___/    |____|  \____|__  / ${NC}";
+	echo -e "${green_text} /_____/     \/                            \/  ${NC}";
+	echo -e "${green_text}                                               ${NC}"
+	echo -e "Welcome to ${On_Green}GreenScience OpenVPN Manager${NC}"
+	echo -e "${darker_text}The git repository is available at: https://github.com/metamericdesign/openvpnscript${NC}"
 	echo ""
-	echo "              ____   _____________________   ";
-	echo "   ____  _____\   \ /   /\______   \      \  ";
-	echo "  / ___\/  ___/\   Y   /  |     ___/   |   \ ";
-	echo " / /_/  >___ \  \     /   |    |  /    |    \\";
-	echo " \___  /____  >  \___/    |____|  \____|__  /";
-	echo "/_____/     \/                            \/ ";
-	echo ""
-	echo "Welcome to GreenScience OpenVPN Manager!"
-	echo "The git repository is available at: https://github.com/metamericdesign/openvpnscript"
-	echo ""
-	echo "What do you want to do?"
+	echo -e "${underline_text}What do you want to do?${NC}"
 	echo ""
 	echo "   1) Display VPN Status"
 	echo "   2) Add a new user"
@@ -1346,7 +1356,7 @@ function manageMenu() {
 	echo "   5) Exit"
 	echo ""
 	until [[ $MENU_OPTION =~ ^[1-5]$ ]]; do
-		read -rp "Select an option [1-4]: " MENU_OPTION
+		read -rp "Select an option [1-5]: " -e -i 1 MENU_OPTION 
 	done
 
 	case $MENU_OPTION in
