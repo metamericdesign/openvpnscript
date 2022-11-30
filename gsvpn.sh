@@ -1320,7 +1320,11 @@ function removeOpenVPN() {
 		echo "Removal aborted!"
 	fi
 }
-
+function displayVPNstatus(){
+	BGreen='\033[1;32m'
+	NC='\033[0m' # No Color
+	echo -e "${BGreen}Green${NC}Science"
+}
 function manageMenu() {
 	echo ""
 	echo "              ____   _____________________   ";
@@ -1335,26 +1339,30 @@ function manageMenu() {
 	echo ""
 	echo "What do you want to do?"
 	echo ""
-	echo "   1) Add a new user"
-	echo "   2) Revoke existing user"
-	echo "   3) Remove OpenVPN"
-	echo "   4) Exit"
+	echo "   1) Display VPN Status"
+	echo "   2) Add a new user"
+	echo "   3) Revoke existing user"
+	echo "   4) Remove OpenVPN"	
+	echo "   5) Exit"
 	echo ""
-	until [[ $MENU_OPTION =~ ^[1-4]$ ]]; do
+	until [[ $MENU_OPTION =~ ^[1-5]$ ]]; do
 		read -rp "Select an option [1-4]: " MENU_OPTION
 	done
 
 	case $MENU_OPTION in
 	1)
-		newClient
+		displayVPNstatus
 		;;
 	2)
-		revokeClient
+		newClient
 		;;
 	3)
-		removeOpenVPN
+		revokeClient
 		;;
 	4)
+		removeOpenVPN
+		;;
+	5)
 		exit 0
 		;;
 	esac
