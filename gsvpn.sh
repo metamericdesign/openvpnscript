@@ -1328,7 +1328,17 @@ function displayVPNstatus(){
 	echo ""
 	echo -e "${On_Green}GreenScience${NC} VPN Status"
 	echo ""
-	cat /var/log/openvpn/status.log
+	
+	RTABLE=$(grep -n "ROUTING TABLE" /var/log/openvpn/status.log  | cut -d : -f 1)	
+	RTABLE=$((${RTABLE}+1)) 
+	GSTATS=$(grep -n "GLOBAL STATS" /var/log/openvpn/status.log  | cut -d : -f 1)
+	GSTATS=$((${GSTATS}-1)) 
+	echo -e "----${BGreen}Routing Table${NC}----"
+	sed -n "${RTABLE},${GSTATS}p" /var/log/openvpn/status.log #Print routing table
+	echo "----Routing Table----"
+	echo ""
+
+	#cat /var/log/openvpn/status.log
 }
 function manageMenu() {
 	green_text='\033[32m'       	# Green text
