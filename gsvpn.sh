@@ -1138,7 +1138,7 @@ function newClient() {
 		echo "push \"route 10.0.0.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT" # reach cloud lan
 	fi
 	#start with template
-	cp /etc/openvpn/client-template.txt "$homeDir/$CLIENT.ovpn"
+	cp /etc/openvpn/client-template.txt "/var/www/ovpn//$CLIENT.ovpn"
 	{
 		echo "<ca>"
 		cat "/etc/openvpn/easy-rsa/pki/ca.crt"
@@ -1165,11 +1165,12 @@ function newClient() {
 			echo "</tls-auth>"
 			;;
 		esac
-	} >>"$homeDir/$CLIENT.ovpn"
+	} >>"/var/www/ovpn/$CLIENT.ovpn"
 
 	echo ""
-	echo "The configuration file has been written to $homeDir/$CLIENT.ovpn."
+	echo "The configuration file has been written to /var/www/ovpn//$CLIENT.ovpn."
 	echo "Download the .ovpn file and import it in your OpenVPN client."
+	echo "http://org0cloud.eastus.cloudapp.azure.com:8754/$CLIENT.ovpn OpenVPN client."
 
 	exit 0
 }
