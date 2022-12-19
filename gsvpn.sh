@@ -1127,7 +1127,7 @@ function newClient() {
 		echo "Select Production Network to connect. 172.16.X.0"
 		echo "Default = 1 (172.16.1.0)"
 	
-		until [[ $OCTET3 =~ ^[1-254]$ ]]; do
+		until [[ $OCTET3 =~ ^[1-9]$|^[1-9][0-9]$|^(254)$ ]]; do
 			read -rp "Type the third octet of the production LAN [1-254]: " -e OCTET3
 		done
 		echo "iroute 172.16.$OCTET3.0 255.255.255.0" >> "/etc/openvpn/ccd/$CLIENT"
