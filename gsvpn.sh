@@ -309,13 +309,20 @@ function installQuestions() {
 		PROTOCOL="tcp"
 		;;
 	esac
-	echo ""
-	echo "What is the Organization Network number to route?"
 
-	until [[ $NETNUM =~ ^[1-9]$|^[1-9][0-9]$|^(250)$ ]]; do
-		read -rp "NETNUM [1-250]: " -e -i 11 NETNUM
-		echo "$NETNUM" >> /etc/openvpn/orgnetnum
-	done
+	# determine if network number exists or promtp and save
+	echo ""
+	if [[ -e /etc/orgnetnum ]]; then
+		input="/etc/orgnetnum"
+		read -r NETNUM < "$input"
+		echo "Found existing network number: $NETNUM"
+	else
+		echo "What is the Organization Network number to route?"
+		until [[ $NETNUM =~ ^[1-9]$|^[1-9][0-9]$|^(250)$ ]]; do
+			read -rp "NETNUM [1-250]: " -e NETNUM
+			echo "$NETNUM" >> "/etc/orgnetnum"
+		done
+	fi
 	echo ""
 	echo "Do you want to use compression? It is not recommended since the VORACLE attack makes use of it."
 	until [[ $COMPRESSION_ENABLED =~ (y|n) ]]; do
@@ -1015,6 +1022,17 @@ verb 3" >>/etc/openvpn/client-template.txt
 }
 
 function newClient() {
+	# determine cloud network to route
+
+	if [[ ! -e /etc/orgnetnum ]]; then
+		echo ""
+		echo "ERROR Could not find Network Number file!"
+		return		
+	fi
+	input="/etc/orgnetnum"
+	read -r NETNUM < "$input"
+	echo ""
+	echo "Connecting to Network Number:$NETNUM"
 	echo ""
 	echo "Will this be a Basestation or Desktop client?"
 	echo "   1) Basestation"
@@ -1077,8 +1095,6 @@ function newClient() {
 	fi
 
 	
-	# determine cloud network to route
-
 	
 	
 
@@ -1095,11 +1111,11 @@ function newClient() {
 			read -rp "Type the third octet of the production LAN [1-254]: " -e OCTET3
 		done
 		echo "iroute 172.16.$OCTET3.0 255.255.255.0" >> "/etc/openvpn/ccd/$CLIENT"
-		echo "push \"route 10.0.0.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT" # reach cloud lan
+		echo "push \"route 10.0.$NETNUM.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT" # reach cloud lan
 	else
 		#desktop
-		echo "push \"route 172.16.0.0 255.255.0.0\"" >> "/etc/openvpn/ccd/$CLIENT" # reach production lan
-		echo "push \"route 10.0.0.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT" # reach cloud lan
+		echo "push \"route 172.16.0.0 255.255.0.0\"" >> "/etc/openvpn/ccd/$CLIENT" # reach all production lan
+		echo "push \"route 10.0.$NETNUM.0 255.255.255.0\"" >> "/etc/openvpn/ccd/$CLIENT" # reach cloud lan
 	fi
 	#start with template
 	cp /etc/openvpn/client-template.txt "/var/www/ovpn//$CLIENT.ovpn"
