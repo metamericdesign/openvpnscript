@@ -309,51 +309,51 @@ function installQuestions() {
 		PROTOCOL="tcp"
 		;;
 	esac
-	echo ""
-	echo "What DNS resolvers do you want to use with the VPN?"
-	echo "   1) Current system resolvers (from /etc/resolv.conf)"
-	echo "   2) Self-hosted DNS Resolver (Unbound)"
-	echo "   3) Cloudflare (Anycast: worldwide)"
-	echo "   4) Quad9 (Anycast: worldwide)"
-	echo "   5) Quad9 uncensored (Anycast: worldwide)"
-	echo "   6) FDN (France)"
-	echo "   7) DNS.WATCH (Germany)"
-	echo "   8) OpenDNS (Anycast: worldwide)"
-	echo "   9) Google (Anycast: worldwide)"
-	echo "   10) Yandex Basic (Russia)"
-	echo "   11) AdGuard DNS (Anycast: worldwide)"
-	echo "   12) NextDNS (Anycast: worldwide)"
-	echo "   13) Custom"
-	until [[ $DNS =~ ^[0-9]+$ ]] && [ "$DNS" -ge 1 ] && [ "$DNS" -le 13 ]; do
-		read -rp "DNS [1-12]: " -e -i 11 DNS
-		if [[ $DNS == 2 ]] && [[ -e /etc/unbound/unbound.conf ]]; then
-			echo ""
-			echo "Unbound is already installed."
-			echo "You can allow the script to configure it in order to use it from your OpenVPN clients"
-			echo "We will simply add a second server to /etc/unbound/unbound.conf for the OpenVPN subnet."
-			echo "No changes are made to the current configuration."
-			echo ""
+	# echo ""
+	# echo "What DNS resolvers do you want to use with the VPN?"
+	# echo "   1) Current system resolvers (from /etc/resolv.conf)"
+	# echo "   2) Self-hosted DNS Resolver (Unbound)"
+	# echo "   3) Cloudflare (Anycast: worldwide)"
+	# echo "   4) Quad9 (Anycast: worldwide)"
+	# echo "   5) Quad9 uncensored (Anycast: worldwide)"
+	# echo "   6) FDN (France)"
+	# echo "   7) DNS.WATCH (Germany)"
+	# echo "   8) OpenDNS (Anycast: worldwide)"
+	# echo "   9) Google (Anycast: worldwide)"
+	# echo "   10) Yandex Basic (Russia)"
+	# echo "   11) AdGuard DNS (Anycast: worldwide)"
+	# echo "   12) NextDNS (Anycast: worldwide)"
+	# echo "   13) Custom"
+	# until [[ $DNS =~ ^[0-9]+$ ]] && [ "$DNS" -ge 1 ] && [ "$DNS" -le 13 ]; do
+	# 	read -rp "DNS [1-12]: " -e -i 11 DNS
+	# 	if [[ $DNS == 2 ]] && [[ -e /etc/unbound/unbound.conf ]]; then
+	# 		echo ""
+	# 		echo "Unbound is already installed."
+	# 		echo "You can allow the script to configure it in order to use it from your OpenVPN clients"
+	# 		echo "We will simply add a second server to /etc/unbound/unbound.conf for the OpenVPN subnet."
+	# 		echo "No changes are made to the current configuration."
+	# 		echo ""
 
-			until [[ $CONTINUE =~ (y|n) ]]; do
-				read -rp "Apply configuration changes to Unbound? [y/n]: " -e CONTINUE
-			done
-			if [[ $CONTINUE == "n" ]]; then
-				# Break the loop and cleanup
-				unset DNS
-				unset CONTINUE
-			fi
-		elif [[ $DNS == "13" ]]; then
-			until [[ $DNS1 =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; do
-				read -rp "Primary DNS: " -e DNS1
-			done
-			until [[ $DNS2 =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; do
-				read -rp "Secondary DNS (optional): " -e DNS2
-				if [[ $DNS2 == "" ]]; then
-					break
-				fi
-			done
-		fi
-	done
+	# 		until [[ $CONTINUE =~ (y|n) ]]; do
+	# 			read -rp "Apply configuration changes to Unbound? [y/n]: " -e CONTINUE
+	# 		done
+	# 		if [[ $CONTINUE == "n" ]]; then
+	# 			# Break the loop and cleanup
+	# 			unset DNS
+	# 			unset CONTINUE
+	# 		fi
+	# 	elif [[ $DNS == "13" ]]; then
+	# 		until [[ $DNS1 =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; do
+	# 			read -rp "Primary DNS: " -e DNS1
+	# 		done
+	# 		until [[ $DNS2 =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; do
+	# 			read -rp "Secondary DNS (optional): " -e DNS2
+	# 			if [[ $DNS2 == "" ]]; then
+	# 				break
+	# 			fi
+	# 		done
+	# 	fi
+	# done
 	echo ""
 	echo "Do you want to use compression? It is not recommended since the VORACLE attack makes use of it."
 	until [[ $COMPRESSION_ENABLED =~ (y|n) ]]; do
@@ -783,76 +783,76 @@ server 10.8.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt" >>/etc/openvpn/server.conf
 
 	# DNS resolvers
-	case $DNS in
-	1) # Current system resolvers
-		# Locate the proper resolv.conf
-		# Needed for systems running systemd-resolved
-		if grep -q "127.0.0.53" "/etc/resolv.conf"; then
-			RESOLVCONF='/run/systemd/resolve/resolv.conf'
-		else
-			RESOLVCONF='/etc/resolv.conf'
-		fi
-		# Obtain the resolvers from resolv.conf and use them for OpenVPN
-		sed -ne 's/^nameserver[[:space:]]\+\([^[:space:]]\+\).*$/\1/p' $RESOLVCONF | while read -r line; do
-			# Copy, if it's a IPv4 |or| if IPv6 is enabled, IPv4/IPv6 does not matter
-			if [[ $line =~ ^[0-9.]*$ ]] || [[ $IPV6_SUPPORT == 'y' ]]; then
-				echo "push \"dhcp-option DNS $line\"" >>/etc/openvpn/server.conf
-			fi
-		done
-		;;
-	2) # Self-hosted DNS resolver (Unbound)
-		echo 'push "dhcp-option DNS 10.8.0.1"' >>/etc/openvpn/server.conf
-		if [[ $IPV6_SUPPORT == 'y' ]]; then
-			echo 'push "dhcp-option DNS fd42:42:42:42::1"' >>/etc/openvpn/server.conf
-		fi
-		;;
-	3) # Cloudflare
-		echo 'push "dhcp-option DNS 1.0.0.1"' >>/etc/openvpn/server.conf
-		echo 'push "dhcp-option DNS 1.1.1.1"' >>/etc/openvpn/server.conf
-		;;
-	4) # Quad9
-		echo 'push "dhcp-option DNS 9.9.9.9"' >>/etc/openvpn/server.conf
-		echo 'push "dhcp-option DNS 149.112.112.112"' >>/etc/openvpn/server.conf
-		;;
-	5) # Quad9 uncensored
-		echo 'push "dhcp-option DNS 9.9.9.10"' >>/etc/openvpn/server.conf
-		echo 'push "dhcp-option DNS 149.112.112.10"' >>/etc/openvpn/server.conf
-		;;
-	6) # FDN
-		echo 'push "dhcp-option DNS 80.67.169.40"' >>/etc/openvpn/server.conf
-		echo 'push "dhcp-option DNS 80.67.169.12"' >>/etc/openvpn/server.conf
-		;;
-	7) # DNS.WATCH
-		echo 'push "dhcp-option DNS 84.200.69.80"' >>/etc/openvpn/server.conf
-		echo 'push "dhcp-option DNS 84.200.70.40"' >>/etc/openvpn/server.conf
-		;;
-	8) # OpenDNS
-		echo 'push "dhcp-option DNS 208.67.222.222"' >>/etc/openvpn/server.conf
-		echo 'push "dhcp-option DNS 208.67.220.220"' >>/etc/openvpn/server.conf
-		;;
-	9) # Google
-		echo 'push "dhcp-option DNS 8.8.8.8"' >>/etc/openvpn/server.conf
-		echo 'push "dhcp-option DNS 8.8.4.4"' >>/etc/openvpn/server.conf
-		;;
-	10) # Yandex Basic
-		echo 'push "dhcp-option DNS 77.88.8.8"' >>/etc/openvpn/server.conf
-		echo 'push "dhcp-option DNS 77.88.8.1"' >>/etc/openvpn/server.conf
-		;;
-	11) # AdGuard DNS
-		echo 'push "dhcp-option DNS 94.140.14.14"' >>/etc/openvpn/server.conf
-		echo 'push "dhcp-option DNS 94.140.15.15"' >>/etc/openvpn/server.conf
-		;;
-	12) # NextDNS
-		echo 'push "dhcp-option DNS 45.90.28.167"' >>/etc/openvpn/server.conf
-		echo 'push "dhcp-option DNS 45.90.30.167"' >>/etc/openvpn/server.conf
-		;;
-	13) # Custom DNS
-		echo "push \"dhcp-option DNS $DNS1\"" >>/etc/openvpn/server.conf
-		if [[ $DNS2 != "" ]]; then
-			echo "push \"dhcp-option DNS $DNS2\"" >>/etc/openvpn/server.conf
-		fi
-		;;
-	esac
+	# case $DNS in
+	# 1) # Current system resolvers
+	# 	# Locate the proper resolv.conf
+	# 	# Needed for systems running systemd-resolved
+	# 	if grep -q "127.0.0.53" "/etc/resolv.conf"; then
+	# 		RESOLVCONF='/run/systemd/resolve/resolv.conf'
+	# 	else
+	# 		RESOLVCONF='/etc/resolv.conf'
+	# 	fi
+	# 	# Obtain the resolvers from resolv.conf and use them for OpenVPN
+	# 	sed -ne 's/^nameserver[[:space:]]\+\([^[:space:]]\+\).*$/\1/p' $RESOLVCONF | while read -r line; do
+	# 		# Copy, if it's a IPv4 |or| if IPv6 is enabled, IPv4/IPv6 does not matter
+	# 		if [[ $line =~ ^[0-9.]*$ ]] || [[ $IPV6_SUPPORT == 'y' ]]; then
+	# 			echo "push \"dhcp-option DNS $line\"" >>/etc/openvpn/server.conf
+	# 		fi
+	# 	done
+	# 	;;
+	# 2) # Self-hosted DNS resolver (Unbound)
+	# 	echo 'push "dhcp-option DNS 10.8.0.1"' >>/etc/openvpn/server.conf
+	# 	if [[ $IPV6_SUPPORT == 'y' ]]; then
+	# 		echo 'push "dhcp-option DNS fd42:42:42:42::1"' >>/etc/openvpn/server.conf
+	# 	fi
+	# 	;;
+	# 3) # Cloudflare
+	# 	echo 'push "dhcp-option DNS 1.0.0.1"' >>/etc/openvpn/server.conf
+	# 	echo 'push "dhcp-option DNS 1.1.1.1"' >>/etc/openvpn/server.conf
+	# 	;;
+	# 4) # Quad9
+	# 	echo 'push "dhcp-option DNS 9.9.9.9"' >>/etc/openvpn/server.conf
+	# 	echo 'push "dhcp-option DNS 149.112.112.112"' >>/etc/openvpn/server.conf
+	# 	;;
+	# 5) # Quad9 uncensored
+	# 	echo 'push "dhcp-option DNS 9.9.9.10"' >>/etc/openvpn/server.conf
+	# 	echo 'push "dhcp-option DNS 149.112.112.10"' >>/etc/openvpn/server.conf
+	# 	;;
+	# 6) # FDN
+	# 	echo 'push "dhcp-option DNS 80.67.169.40"' >>/etc/openvpn/server.conf
+	# 	echo 'push "dhcp-option DNS 80.67.169.12"' >>/etc/openvpn/server.conf
+	# 	;;
+	# 7) # DNS.WATCH
+	# 	echo 'push "dhcp-option DNS 84.200.69.80"' >>/etc/openvpn/server.conf
+	# 	echo 'push "dhcp-option DNS 84.200.70.40"' >>/etc/openvpn/server.conf
+	# 	;;
+	# 8) # OpenDNS
+	# 	echo 'push "dhcp-option DNS 208.67.222.222"' >>/etc/openvpn/server.conf
+	# 	echo 'push "dhcp-option DNS 208.67.220.220"' >>/etc/openvpn/server.conf
+	# 	;;
+	# 9) # Google
+	# 	echo 'push "dhcp-option DNS 8.8.8.8"' >>/etc/openvpn/server.conf
+	# 	echo 'push "dhcp-option DNS 8.8.4.4"' >>/etc/openvpn/server.conf
+	# 	;;
+	# 10) # Yandex Basic
+	# 	echo 'push "dhcp-option DNS 77.88.8.8"' >>/etc/openvpn/server.conf
+	# 	echo 'push "dhcp-option DNS 77.88.8.1"' >>/etc/openvpn/server.conf
+	# 	;;
+	# 11) # AdGuard DNS
+	# 	echo 'push "dhcp-option DNS 94.140.14.14"' >>/etc/openvpn/server.conf
+	# 	echo 'push "dhcp-option DNS 94.140.15.15"' >>/etc/openvpn/server.conf
+	# 	;;
+	# 12) # NextDNS
+	# 	echo 'push "dhcp-option DNS 45.90.28.167"' >>/etc/openvpn/server.conf
+	# 	echo 'push "dhcp-option DNS 45.90.30.167"' >>/etc/openvpn/server.conf
+	# 	;;
+	# 13) # Custom DNS
+	# 	echo "push \"dhcp-option DNS $DNS1\"" >>/etc/openvpn/server.conf
+	# 	if [[ $DNS2 != "" ]]; then
+	# 		echo "push \"dhcp-option DNS $DNS2\"" >>/etc/openvpn/server.conf
+	# 	fi
+	# 	;;
+	# esac
 	#echo 'push "redirect-gateway def1 bypass-dhcp"' >>/etc/openvpn/server.conf
 
 	# IPv6 network settings if needed
