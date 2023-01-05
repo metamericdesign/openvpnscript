@@ -102,17 +102,8 @@ function initialCheck() {
 		exit 1
 	fi
 	checkOS
-	while getopts u:a:f: flag
-	do
-		case "${flag}" in
-			t) type=${OPTARG};;
-			c) client=${OPTARG};;
-			n) netnum=${OPTARG};;
-		esac
-	done
-	echo "type: $type";
-	echo "client: $client";
-	echo "netnum: $netnum";
+	
+	
 }
 
 function installUnbound() {
@@ -1380,6 +1371,10 @@ function manageMenu() {
 	esac
 }
 
+
+echo "type: $1";
+echo "client: $2";
+echo "netnum: $3";
 # Check for root, TUN, OS...
 initialCheck
 
