@@ -932,7 +932,7 @@ function newClient() {
 	
 	
 	
-	# determine cloud network to route
+	# determine cloud network to route by using orgnetnum file
 
 	if [[ ! -e /etc/orgnetnum ]]; then
 		echo ""
@@ -942,22 +942,21 @@ function newClient() {
 	input="/etc/orgnetnum"
 	read -r NETNUM < "$input"
 	echo ""
-	echo "Connecting to Network Number:$NETNUM"
+	echo "   Connecting to Network Number:$NETNUM"
 	echo ""
 	echo "Will this be a Basestation or Desktop client?"
 	echo "   1) Basestation"
 	echo "   2) Desktop (default)"
 
-	PASS="$AUTOCLIENTTYPE"
+	PASS="$AUTOCLIENTTYPE"  # if supplied, we wont ask user
 	until [[ $PASS =~ ^[1-2]$ ]]; do
 		read -rp "Select an option [1-2]: " -e PASS
 	done
 	
 	echo ""
 	echo "Tell me a name for the client."
-	echo "The name must consist of alphanumeric character. It may also include an underscore or a dash."
-
-	CLIENT="$AUTOCLIENTNAME"
+	
+	CLIENT="$AUTOCLIENTNAME" # if supplied, we wont ask user
 	until [[ $CLIENT =~ ^[a-zA-Z0-9_-]+$ ]]; do
 		read -rp "Client name: " -e CLIENT
 	done
@@ -1062,7 +1061,7 @@ function newClient() {
 	echo ""
 	echo "The configuration file has been written to /var/www/ovpn//$CLIENT.ovpn."
 	echo "Download the .ovpn file and import it in your OpenVPN client."
-	echo "http://org0cloud.eastus.cloudapp.azure.com:8754/$CLIENT.ovpn OpenVPN client."
+	echo "http://org$NETNUM""cloud.eastus.cloudapp.azure.com:8754/$CLIENT.ovpn OpenVPN client."
 
 	exit 0
 }
